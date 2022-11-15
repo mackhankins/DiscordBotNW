@@ -95,24 +95,24 @@ function helpScheduling(interaction) {
         .setTitle("Scheduling")
         .addFields([
             {
-                name: `\`!scheduleWar <HH:MM>\``,
+                name: `\`nwrt!scheduleWar <HH:MM>\``,
                 value: 'Schedule a war at given time (HH:MM).',
             },
             {
-                name: `\`!startWar <MM:SS>\``,
+                name: `\`nwrt!startWar <MM:SS>\``,
                 value: 'Schedule a war which starts at given time (MM:SS)',
             },
             {
-                name: `\`!leaveWar\``,
+                name: `\`nwrt!leaveWar\``,
                 value: 'Manually make the bot leave the war channel',
             },
             {
-                name: `\`!list\``,
+                name: `\`nwrt!list\``,
                 value: 'List all scheduled wars',
             },
             {
-                name: `\`!unscheduleWar <HH:MM>\``,
-                value: 'Unschedule a war at time (HH:MM) specified by \`!list\`.',
+                name: `\`nwrt!unscheduleWar <HH:MM>\``,
+                value: 'Unschedule a war at time (HH:MM) specified by \`nwrt!list\`.',
             },
         ])
     interaction.update({
@@ -129,11 +129,11 @@ function helpSettings(interaction, option) {
         .setColor('AQUA')
         .addFields([
             {
-                name: `\`!settings get ${option ? option.name : '<OPTION>'}\``,
+                name: `\`nwrt!settings get ${option ? option.name : '<OPTION>'}\``,
                 value: `Get the settings of ${option ? ` the ${option.name} option` : `the specified option`}.`,
             },
             {
-                name: `\`!settings set ${option ? option.name : '<OPTION>'} ${option ? option.value : '<VALUE>'}\``,
+                name: `\`nwrt!settings set ${option ? option.name : '<OPTION>'} ${option ? option.value : '<VALUE>'}\``,
                 value: `Set ${option ? option.name : `an option`} to ${option ? option.value : `a specified value`}.`,
             },
         ])
@@ -151,7 +151,7 @@ function helpOther(interaction) {
         .setColor('AQUA')
         .addFields([
             {
-                name: `\`!stats\``,
+                name: `\`nwrt!stats\``,
                 value: 'Get the total number of wars',
             }
         ])
