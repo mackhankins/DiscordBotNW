@@ -96,18 +96,18 @@ class Guild {
 
     startWar(msg, args) {
         if (args.length !== 1) {
-            msg.reply("Illegal number of arguments for war scheduling. Required: 1, Received: " + args.length + ". Type !help for a list of commands");
+            msg.reply("Illegal number of arguments for war scheduling. Required: 1, Received: " + args.length + ". Type rt!help for a list of commands");
             return;
         }
         const timeArgs = args[0].split(":");
         if (!validateTimeArgsMinuteSeconds(timeArgs)) {
-            msg.reply(args[0] + " is not a valid time. Type !help for a list of commands")
+            msg.reply(args[0] + " is not a valid time. Type rt!help for a list of commands")
             return;
         }
         const current = new Date()
         const warStartMillis = new Date(current.getFullYear(), current.getMonth(), current.getDate(), current.getHours(), current.getMinutes() + parseInt(timeArgs[0]), current.getSeconds() + parseInt(timeArgs[1])).getTime();
         if (this.checkForCollidingTimers(warStartMillis)) {
-            msg.reply(args[0] + " collides with a different war. !leaveWar the current war or use !list and !unscheduleWar unwanted wars.")
+            msg.reply(args[0] + " collides with a different war. rt!leaveWar the current war or use !list and !unscheduleWar unwanted wars.")
             return;
         }
         const war = new War(this, msg, warStartMillis, this.startCallback, this.leaveCallback);
@@ -118,7 +118,7 @@ class Guild {
 
     scheduleWar(msg, args) {
         if (args.length !== 1) {
-            msg.reply("Illegal number of arguments for war scheduling. Required: 1, Received: " + args.length + ". Type !help for a list of commands");
+            msg.reply("Illegal number of arguments for war scheduling. Required: 1, Received: " + args.length + ". Type rt!help for a list of commands");
             return;
         }
         const warStartMillis = timeStringToMillis(args[0]) - this.timeZone;
@@ -126,7 +126,7 @@ class Guild {
             msg.reply(`${args[0]} is not a valid time.`)
         }
         if (this.checkForCollidingTimers(warStartMillis)) {
-            msg.reply(args[0] + " collides with a different war. !leaveWar the curent war or use !list and !unscheduleWar unwanted wars.")
+            msg.reply(args[0] + " collides with a different war. rt!leaveWar the curent war or use !list and !unscheduleWar unwanted wars.")
             return;
         }
         const war = new War(this, msg, warStartMillis, this.startCallback, this.leaveCallback);
@@ -175,7 +175,7 @@ class Guild {
                 this.handleSettingsSet(msg, args.slice(1));
                 break;
             default:
-                msg.reply(args[0] + " is not a valid argument. Type !help for a list of commands")
+                msg.reply(args[0] + " is not a valid argument. Type rt!help for a list of commands")
         }
     }
 
@@ -185,7 +185,7 @@ class Guild {
 
     handleRemoveSchedule(msg, args) {
         if (args.length !== 1) {
-            msg.reply("Illegal number of argument. Type !help for a list of commands")
+            msg.reply("Illegal number of argument. Type rt!help for a list of commands")
             return;
         }
         const timeStringToTimestamp = new Map();
@@ -232,13 +232,13 @@ class Guild {
                 msg.reply(`Current time: ${millisToCETString(new Date().getTime() + this.timeZone)}`);
                 break;
             default:
-                msg.reply(args[0] + " is not a valid argument. Type !help for a list of commands");
+                msg.reply(args[0] + " is not a valid argument. Type rt!help for a list of commands");
         }
     }
 
     handleSettingsSet(msg, args) {
         if (args.length !== 2) {
-            msg.reply("Illegal number of Arguments. Make sure to put arguments including whitespaces in qoutes. I.E: !settings set warChannel \"War 1\"");
+            msg.reply("Illegal number of Arguments. Make sure to put arguments including whitespaces in qoutes. I.E: rt!settings set warChannel \"War 1\"");
             return;
         }
         switch (args[0]) {
@@ -269,7 +269,7 @@ class Guild {
             }
             case 'timeZone': {
                 if (this.startTimerWarMap.size) {
-                    msg.reply("Can't change time zone while scheduling wars. Use !list and !unscheduleWar all listed wars.")
+                    msg.reply("Can't change time zone while scheduling wars. Use rt!list and !unscheduleWar all listed wars.")
                     return;
                 }
                 const millis = timeStringToMillis(args[1]);
@@ -301,7 +301,7 @@ class Guild {
             case 'callRate': {
                 const nums = extractCallRate(args[1])
                 if (!nums) {
-                    msg.reply(args[1] + " contains non numbers or is in the wrong format. Type !help for a list of commands")
+                    msg.reply(args[1] + " contains non numbers or is in the wrong format. Type rt!help for a list of commands")
                     return;
                 }
                 this[args[0]] = nums.sort((a, b) => a - b).reverse();
@@ -310,7 +310,7 @@ class Guild {
                 break;
             }
             default:
-                msg.reply(args[0] + " is not a valid argument. Type !help for a list of commands")
+                msg.reply(args[0] + " is not a valid argument. Type rt!help for a list of commands")
         }
     }
 
@@ -329,7 +329,8 @@ class Guild {
             if (msg.content.startsWith("rt!")) {
                 console.log(msg.content)
                 const args = splitArgs(msg.content)
-                switch (args[0].substr(1)) {
+                console.log(msg)
+                switch (args[0].substr(3)) {
                     case "scheduleWar":
                         this.handleScheduleWar(msg, args.slice(1));
                         break;
@@ -355,7 +356,7 @@ class Guild {
                         this.handleStats(msg);
                         break;
                     default:
-                        msg.reply("Invalid command. Type !help.")
+                        msg.reply("Invalid command. Type rt!help.")
 
                 }
             }

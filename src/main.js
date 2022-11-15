@@ -13,7 +13,7 @@ client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`)
     client.user.setPresence({
         activities: [{
-            name: '"nwrt!help" for commands'
+            name: '"rt!help" for commands'
         }]
     })
 })
