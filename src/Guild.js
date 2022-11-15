@@ -326,7 +326,7 @@ class Guild {
                 ])) {
                     return;
                 }
-            if (msg.content.startsWith("!")) {
+            if (msg.content.startsWith("rt!")) {
                 console.log(msg.content)
                 const args = splitArgs(msg.content)
                 switch (args[0].substr(1)) {
