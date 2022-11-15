@@ -329,7 +329,6 @@ class Guild {
             if (msg.content.startsWith("rt!")) {
                 console.log(msg.content)
                 const args = splitArgs(msg.content)
-                console.log(msg)
                 switch (args[0].substr(3)) {
                     case "scheduleWar":
                         this.handleScheduleWar(msg, args.slice(1));
