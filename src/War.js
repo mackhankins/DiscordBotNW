@@ -50,7 +50,7 @@ class War {
     }
 
     joinWarChannel() {
-        this.getFirstChannelFromName(this.guild.warChannel).then(warChannel => {
+        this.getFirstChannelFromId(this.guild.warChannel).then(warChannel => {
             var con = joinVoiceChannel({
                 channelId: warChannel.id,
                 guildId: this.msg.guild.id,
@@ -63,12 +63,12 @@ class War {
         });
     }
 
-    getFirstChannelFromName(name) {
+    getFirstChannelFromId(id) {
         return new Promise((resolve, reject) => {
             global.client.guilds.fetch().then(data => {
                 data.get(this.guild.id).fetch().then(guild => {
                     guild.channels.fetch().then(channels => {
-                        resolve(channels.find(channel => channel.name == name))
+                        resolve(channels.get(id))
                     })
                 })
             })

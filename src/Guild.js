@@ -36,12 +36,12 @@ class Guild {
         guildService.save(this);
     }
 
-    getFirstChannelFromName(name) {
+    getFirstChannelFromId(id) {
         return new Promise((resolve, reject) => {
             global.client.guilds.fetch().then(data => {
                 data.get(this.id).fetch().then(guild => {
                     guild.channels.fetch().then(channels => {
-                        resolve(channels.find(channel => channel.name == name))
+                        resolve(channels.get(id))
                     })
                 })
             })
@@ -49,10 +49,10 @@ class Guild {
     }
 
     handleScheduleWar(msg, args) {
-        this.getFirstChannelFromName(this.warChannel).then((warChannel) => {
+        this.getFirstChannelFromId(this.warChannel).then((warChannel) => {
             if (warChannel) {
                 if (warChannel.type === 'GUILD_VOICE') {
-                    if(!warChannel.permissionsFor(msg.guild.me).has([
+                    if (!warChannel.permissionsFor(msg.guild.me).has([
                         Permissions.FLAGS.SPEAK,
                         Permissions.FLAGS.CONNECT,
                     ])) {
@@ -72,10 +72,10 @@ class Guild {
     }
 
     handleStartWar(msg, args) {
-        this.getFirstChannelFromName(this.warChannel).then((warChannel) => {
+        this.getFirstChannelFromId(this.warChannel).then((warChannel) => {
             if (warChannel) {
                 if (warChannel.type === 'GUILD_VOICE') {
-                    if(!warChannel.permissionsFor(msg.guild.me).has([
+                    if (!warChannel.permissionsFor(msg.guild.me).has([
                         Permissions.FLAGS.SPEAK,
                         Permissions.FLAGS.CONNECT,
                     ])) {
@@ -135,7 +135,7 @@ class Guild {
         msg.reply("The war has been scheduled for " + args[0])
     }
 
-    checkForCollidingTimers(warStartMillis){
+    checkForCollidingTimers(warStartMillis) {
         const collidingTimers = [...this.startTimerWarMap.keys()].filter(time => Math.abs(time - warStartMillis) < 1000 * 60 * 30 + this.preJoinTimer * 1000).length != 0
         const currentWarColliding = this.activeWar ? Math.abs(this.activeWar.warStart - warStartMillis) < 1000 * 60 * 30 + this.preJoinTimer * 1000 : false;
         return collidingTimers || currentWarColliding;
@@ -211,6 +211,16 @@ class Guild {
         msg.reply("Current scheduled Wars: " + (res.length ? res.join(", ") : "none"));
     }
 
+    handleFindChannelByName(msg, args, type) {
+        let GUILD = global.client.guilds.cache.get(this.id)
+        let channel = GUILD.channels.cache.find(c => c.name === args)
+        if (!channel) return msg.reply("I can't find the " + args + " channel.")
+        if (type !== channel.type) {
+            return msg.reply(args + " is the wrong channel type")
+        }
+        return channel.id;
+    }
+
     handleSettingsGet(msg, args) {
         switch (args[0]) {
             case 'channelName':
@@ -244,14 +254,24 @@ class Guild {
         switch (args[0]) {
             case 'channelName': {
                 this[args[0]] = args[1];
-                guildService.save(this)
-                msg.reply("Channel Name has been changed to " + args[1]);
+                var channelNameId = this.handleFindChannelByName(msg, args[1], 'GUILD_TEXT')
+                if (isInt(channelNameId)) {
+                    guildService.save(this)
+                    msg.reply("Channel Name has been changed to " + args[1]);
+                } else {
+                    msg.reply("Configuration error")
+                }
                 break;
             }
             case 'warChannel': {
                 this[args[0]] = args[1];
-                guildService.save(this)
-                msg.reply("warChannel has been changed to " + args[1]);
+                var warChannelId = this.handleFindChannelByName(msg, args[1], 'GUILD_VOICE')
+                if (isInt(warChannelId)) {
+                    guildService.save(this)
+                    msg.reply("warChannel has been changed to " + args[1]);
+                } else {
+                    msg.reply("Configureation error")
+                }
                 break;
             }
             case 'preJoinTimer': {
@@ -319,14 +339,14 @@ class Guild {
     }
 
     dispatch(msg) {
-        if (msg.channel.name === this.channelName) {
-            if(!msg.channel.permissionsFor(msg.guild.me).has([
+        if (msg.content.startsWith("rt!")) {
+            if (msg.channel.name == this.channelName || this.channelName == 'undefined') {
+                if (!msg.channel.permissionsFor(msg.guild.me).has([
                     Permissions.FLAGS.SEND_MESSAGES,
                     Permissions.FLAGS.MANAGE_MESSAGES,
                 ])) {
                     return;
                 }
-            if (msg.content.startsWith("rt!")) {
                 console.log(msg.content)
                 const args = splitArgs(msg.content)
                 switch (args[0].substr(3)) {
@@ -363,7 +383,10 @@ class Guild {
     }
 
     interact(interaction) {
-        if (interaction.channel.name !== this.channelName) return;
+        if (this.channelName != 'undefined' && interaction.channel.name != this.channelName) {
+            console.log(this.channelName + interaction.channel.name) 
+            return;
+        }
         if(!interaction.channel.permissionsFor(interaction.guild.me).has([
             Permissions.FLAGS.SEND_MESSAGES,
             Permissions.FLAGS.MANAGE_MESSAGES,
@@ -391,12 +414,12 @@ function buildSettingsDescriptorMap() {
         {
             name: "channelName",
             value: "\"war bot\"",
-            description: "Name of the channel the bot should listen for commands on."
+            description: "ID of the channel the bot should listen for commands on."
         },
         {
             name: "warChannel",
             value: "\"war channel\"",
-            description: "Name of the voice channel the bot should join for war."
+            description: "ID of the voice channel the bot should join for war."
         },
         {
             name: "preJoinTimer",
