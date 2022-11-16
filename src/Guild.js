@@ -253,24 +253,20 @@ class Guild {
         }
         switch (args[0]) {
             case 'channelName': {
-                this[args[0]] = args[1];
                 var channelNameId = this.handleFindChannelByName(msg, args[1], 'GUILD_TEXT')
                 if (isInt(channelNameId)) {
+                    this[args[0]] = args[1];
                     guildService.save(this)
                     msg.reply("Channel Name has been changed to " + args[1]);
-                } else {
-                    msg.reply("Configuration error")
                 }
                 break;
             }
             case 'warChannel': {
-                this[args[0]] = args[1];
                 var warChannelId = this.handleFindChannelByName(msg, args[1], 'GUILD_VOICE')
                 if (isInt(warChannelId)) {
+                    this[args[0]] = args[1];
                     guildService.save(this)
                     msg.reply("warChannel has been changed to " + args[1]);
-                } else {
-                    msg.reply("Configureation error")
                 }
                 break;
             }
