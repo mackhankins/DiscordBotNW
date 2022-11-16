@@ -36,20 +36,17 @@ class Guild {
         guildService.save(this);
     }
 
-    getFirstChannelFromId(id) {
+    getFirstChannelFromName(name) {
         return new Promise((resolve, reject) => {
-            global.client.guilds.fetch().then(data => {
-                data.get(this.id).fetch().then(guild => {
-                    guild.channels.fetch().then(channels => {
-                        resolve(channels.get(id))
-                    })
-                })
-            })
+            let GUILD = global.client.guilds.cache.get(this.id)
+            let channel = GUILD.channels.cache.find(c => c.name === name)
+            resolve(channel)
         })
     }
 
     handleScheduleWar(msg, args) {
-        this.getFirstChannelFromId(this.warChannel).then((warChannel) => {
+        console.log(this.getFirstChannelFromName(this.warChannel))
+        this.getFirstChannelFromName(this.warChannel).then((warChannel) => {
             if (warChannel) {
                 if (warChannel.type === 'GUILD_VOICE') {
                     if (!warChannel.permissionsFor(msg.guild.me).has([
@@ -72,7 +69,7 @@ class Guild {
     }
 
     handleStartWar(msg, args) {
-        this.getFirstChannelFromId(this.warChannel).then((warChannel) => {
+        this.getFirstChannelFromName(this.warChannel).then((warChannel) => {
             if (warChannel) {
                 if (warChannel.type === 'GUILD_VOICE') {
                     if (!warChannel.permissionsFor(msg.guild.me).has([
@@ -380,10 +377,10 @@ class Guild {
 
     interact(interaction) {
         if (this.channelName != 'undefined' && interaction.channel.name != this.channelName) {
-            console.log(this.channelName + interaction.channel.name) 
+            console.log(this.channelName + interaction.channel.name)
             return;
         }
-        if(!interaction.channel.permissionsFor(interaction.guild.me).has([
+        if (!interaction.channel.permissionsFor(interaction.guild.me).has([
             Permissions.FLAGS.SEND_MESSAGES,
             Permissions.FLAGS.MANAGE_MESSAGES,
         ])) {

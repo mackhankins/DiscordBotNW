@@ -50,7 +50,9 @@ class War {
     }
 
     joinWarChannel() {
-        this.getFirstChannelFromId(this.guild.warChannel).then(warChannel => {
+        console.log(this.guild.warChannel)
+        console.log(this.guild)
+        this.getFirstChannelFromName(this.guild.warChannel).then(warChannel => {
             var con = joinVoiceChannel({
                 channelId: warChannel.id,
                 guildId: this.msg.guild.id,
@@ -63,17 +65,12 @@ class War {
         });
     }
 
-    getFirstChannelFromId(id) {
+    getFirstChannelFromName(name) {
         return new Promise((resolve, reject) => {
-            global.client.guilds.fetch().then(data => {
-                data.get(this.guild.id).fetch().then(guild => {
-                    guild.channels.fetch().then(channels => {
-                        resolve(channels.get(id))
-                    })
-                })
-            })
+            var GUILD = global.client.guilds.cache.get(this.guild.id)
+            var channel = GUILD.channels.cache.find(c => c.name === name)
+            resolve(channel)
         })
-
     }
 
     scheduleTimerForWave(previousTimer, currentTimer, warStartMillis, last) {
