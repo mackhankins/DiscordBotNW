@@ -1,5 +1,5 @@
 {
-  "name": "Respawn Timer Bot",
+  "name": "nw-respawn-timer-bot",
   "version": "1.0.0",
   "description": "New World Respawn Timer bot for discord.",
   "main": "main.js",
