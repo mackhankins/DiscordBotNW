@@ -1,13 +1,14 @@
 {
-  "name": "discrodbot",
+  "name": "Respawn Timer Bot",
   "version": "1.0.0",
-  "description": "discordbot",
+  "description": "New World Respawn Timer bot for discord.",
   "main": "main.js",
   "scripts": {
     "start": "node ./src/main.js",
+    "dev": "nodemon ./src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Schrader Jones",
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.8.0",

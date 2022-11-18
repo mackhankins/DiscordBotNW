@@ -2,9 +2,9 @@ const { createAudioResource, joinVoiceChannel, AudioPlayerStatus } = require('@d
 const path = require('path');
 const sounds = require('./sounds');
 const { getRandomJoinFile } = require('./utils');
-const respawns = require(path.join("..", 'config', 'warRespawns.json'));
+const respawns = require(path.join("..", 'config', 'invasionRespawns.json'));
 
-class War {
+class Invasions {
 
 
     constructor(guild, msg, warStart, startCallback, leaveCallback) {
@@ -132,4 +132,4 @@ class War {
 
 }
 
-exports.War = War;
+exports.Invasions = Invasions;

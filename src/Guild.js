@@ -45,7 +45,6 @@ class Guild {
     }
 
     handleScheduleWar(msg, args) {
-        console.log(this.getFirstChannelFromName(this.warChannel))
         this.getFirstChannelFromName(this.warChannel).then((warChannel) => {
             if (warChannel) {
                 if (warChannel.type === 'GUILD_VOICE') {
@@ -377,7 +376,6 @@ class Guild {
 
     interact(interaction) {
         if (this.channelName != 'undefined' && interaction.channel.name != this.channelName) {
-            console.log(this.channelName + interaction.channel.name)
             return;
         }
         if (!interaction.channel.permissionsFor(interaction.guild.me).has([
